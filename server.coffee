@@ -1,10 +1,6 @@
 express =        require 'express'
-engines =        require 'consolidate'
-
-routes  =        require './routes'
 
 exports.startServer = (config, callback) ->
-
   port = process.env.PORT or config.server.port
 
   app = express()
@@ -13,9 +9,6 @@ exports.startServer = (config, callback) ->
 
   app.configure ->
     app.set 'port', port
-    app.set 'views', config.server.views.path
-    app.engine config.server.views.extension, engines[config.server.views.compileWith]
-    app.set 'view engine', config.server.views.extension
     app.use express.favicon()
     app.use express.bodyParser()
     app.use express.methodOverride()
@@ -25,8 +18,6 @@ exports.startServer = (config, callback) ->
 
   app.configure 'development', ->
     app.use express.errorHandler()
-
-  app.get '/', routes.index(config)
 
   callback(server)
 

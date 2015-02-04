@@ -1,3 +1,15 @@
 [
-  "assets/javascripts/vendor/jquery/jquery.js"
+  "assets/javascripts/vendor/backbone/backbone.js",
+  "assets/javascripts/vendor/bootstrap/bootstrap.js",
+  "assets/javascripts/vendor/jquery/jquery.js",
+  "assets/javascripts/vendor/react/react.js",
+  "assets/javascripts/vendor/reflux/reflux.js",
+  "assets/javascripts/vendor/sugar/sugar.min.js",
+  "assets/javascripts/vendor/underscore/underscore.js",
+  "assets/stylesheets/vendor/bootstrap/bootstrap.css",
+  "assets/stylesheets/vendor/bootstrap/bootstrap.less",
+  "assets/stylesheets/vendor/bootstrap/glyphicons-halflings-regular.eot",
+  "assets/stylesheets/vendor/bootstrap/glyphicons-halflings-regular.svg",
+  "assets/stylesheets/vendor/bootstrap/glyphicons-halflings-regular.ttf",
+  "assets/stylesheets/vendor/bootstrap/glyphicons-halflings-regular.woff"
 ]

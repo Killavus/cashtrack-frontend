@@ -7,12 +7,13 @@ exports.config =
     "live-reload"
     "bower"
     "coffeescript"
-    "stylus"
-    "dust"
     "copy"]
-  template:
-    wrapType: 'common'
-    commonLibPath: 'dust'
+  server:
+    defaultServer:
+      onePager: true
+    views:
+      compileWith: 'html'
+      path: 'public'
   browserify:
     bundles:
       [
@@ -23,6 +24,12 @@ exports.config =
       jquery:
         path: 'javascripts/vendor/jquery/jquery'
         exports: '$'
-    aliases:
-      dust: 'javascripts/vendor/dust'
-      templates: 'javascripts/templates'
+      react:
+        path: 'javascripts/vendor/react/react'
+        exports: 'React'
+      reflux:
+        path: 'javascripts/vendor/reflux/reflux'
+        exports: 'Reflux'
+      backbone:
+        path: 'javascripts/vendor/backbone/backbone'
+        exports: 'Backbone'

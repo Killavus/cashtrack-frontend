@@ -1,6 +1,3 @@
-$           = require 'jquery'
-ExampleView = require './app/example-view'
+$ = require 'jquery'
 
 $ ->
-  view = new ExampleView()
-  view.render 'body'
