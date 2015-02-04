@@ -1,3 +1,6 @@
 $ = require 'jquery'
 
+window.jQuery = $
+
 $ ->
+  

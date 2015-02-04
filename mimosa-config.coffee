@@ -30,6 +30,9 @@ exports.config =
       reflux:
         path: 'javascripts/vendor/reflux/reflux'
         exports: 'Reflux'
+      underscore:
+        path: 'javascripts/vendor/underscore/underscore'
+        exports: '_'
       backbone:
         path: 'javascripts/vendor/backbone/backbone'
         exports: 'Backbone'
