@@ -1,5 +1,7 @@
 TopMenu = require('./menu/app')
 Router = require('./application_router')
+_ = require('underscore')
+Backbone = require('backbone')
 
 class CashTrack
   constructor: ->
@@ -12,5 +14,6 @@ class CashTrack
 
     @topMenu.start(topMenuNode)
     @router.start(contentNode)
+    Backbone.history.start()
 
 module.exports = CashTrack

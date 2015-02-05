@@ -104,7 +104,7 @@ BudgetsLink = React.createClass
         key: 'newBudget'
         a
           key: 'new'
-          href: '#budget/new'
+          href: '#new_budget'
           "New Budget"
 
   render: ->

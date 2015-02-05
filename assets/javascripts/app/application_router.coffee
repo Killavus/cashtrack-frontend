@@ -3,11 +3,15 @@ _ = require('underscore')
 
 class ApplicationRouter
   constructor: ->
-    @buildRoutes()
 
-  buildRoutes: ->
+  buildRoutes: (router) ->
+    router.route('budget/:id', (id) => console.log(id))
+    router.route('new_budget', => console.log 'new budget')
+
 
   start: (@contentNode) ->
-    history.start(pushState: true)
+    router = new Router()
+    @buildRoutes(router)
+
 
 module.exports = ApplicationRouter
