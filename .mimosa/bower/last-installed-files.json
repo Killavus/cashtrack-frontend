@@ -4,6 +4,7 @@
   "assets/javascripts/vendor/jquery/jquery.js",
   "assets/javascripts/vendor/react/react.js",
   "assets/javascripts/vendor/reflux/reflux.js",
+  "assets/javascripts/vendor/simpleStorage/simpleStorage.js",
   "assets/javascripts/vendor/sugar/sugar.min.js",
   "assets/javascripts/vendor/underscore/underscore.js",
   "assets/stylesheets/vendor/bootstrap/bootstrap.css",

@@ -36,3 +36,6 @@ exports.config =
       backbone:
         path: 'javascripts/vendor/backbone/backbone'
         exports: 'Backbone'
+      simplestorage:
+        path: 'javascripts/vendor/simpleStorage/simpleStorage'
+        exports: 'simpleStorage'

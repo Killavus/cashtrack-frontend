@@ -1,7 +1,9 @@
-TopMenu = require('./menu/app')
-Router = require('./application_router')
-_ = require('underscore')
-Backbone = require('backbone')
+TopMenu             = require('./menu/app')
+Router              = require('./application_router')
+_                   = require('underscore')
+Backbone            = require('backbone')
+
+AuthenticationStore = require('./stores/authentication_store').Store
 
 class CashTrack
   constructor: ->
@@ -15,5 +17,6 @@ class CashTrack
     @topMenu.start(topMenuNode)
     @router.start(contentNode)
     Backbone.history.start()
+    AuthenticationStore.start()
 
 module.exports = CashTrack

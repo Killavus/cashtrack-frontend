@@ -1,39 +1,35 @@
-Reflux = require('reflux')
+Reflux              = require('reflux')
+Immutable           = require('immutable')
 
-BudgetActions = Reflux.createActions(["Open", "Close"])
+AuthenticationStore = require('./authentication_store').Store
+
+Backend             = require('../adapters/backend')
+BudgetActions       = Reflux.createActions(["Open", "Close"])
 
 BudgetStore = Reflux.createStore
   init: ->
-    @counter = 4
-    @budgets = @exampleBudgets()
+    @budgets = new Immutable.List([])
+    @ready   = false
+    @backend = Backend
+
+    @listenTo(AuthenticationStore, "authenticationChanged")
     @listenTo(BudgetActions.Open, "openBudget")
     @listenTo(BudgetActions.Close, "closeBudget")
 
   getInitialState: ->
-    @budgets
+    @data()
 
-  openBudget: (connection, name) ->
-    @budgets = @budgets.concat([{ id: @counter++, name: name }])
-    @trigger(@budgets)
+  data: ->
+    new Immutable.Map(ready: @ready, budgets: @budgets)
 
-  closeBudget: (connection, budgetID) ->
-
-
-  exampleBudgets: ->
-    [
-      {
-        id: 1,
-        name: 'Budget #1'
-      },
-      {
-        id: 2,
-        name: 'Budget #2'
-      },
-      {
-        id: 3,
-        name: 'Budget #3'
-      }
-    ]
+  authenticationChanged: (authentication) ->
+    if authentication
+      @backend.authenticate(authentication)
+      unless @ready
+        @backend.get('budgetoverview').then (budgetsJSON) =>
+          @budgets = Immutable.fromJS(budgetsJSON.budgets)
+          @ready = true
+          @trigger(@data())
 
 module.exports =
   Store: BudgetStore

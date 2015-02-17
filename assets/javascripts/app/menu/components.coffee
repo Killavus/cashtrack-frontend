@@ -11,7 +11,7 @@ TopMenuComponent = React.createClass
     @container(
       @header()
       @menuElements(
-        @budgets()
+        @budgetsUI()
       )
     )
 
@@ -66,7 +66,7 @@ TopMenuComponent = React.createClass
       @mobileNavigationButton()
       @headerBrand()
 
-  budgets: ->
+  budgetsUI: ->
     React.createElement(
       BudgetsLink
       key: 'budgetsLink'
@@ -74,7 +74,19 @@ TopMenuComponent = React.createClass
 
 BudgetsLink = React.createClass
   displayName: 'Budgets Link'
-  mixins: [Reflux.connect(BudgetStore, "budgets")]
+  mixins: [Reflux.ListenerMixin]
+
+  getInitialState: ->
+    ready: false
+
+  componentDidMount: ->
+    @listenTo(BudgetStore, @onBudgetsChange)
+
+  onBudgetsChange: (budgetsData) ->
+    @setState ready: budgetsData.get('ready'), budgets: budgetsData.get('budgets')
+
+  budgets: ->
+    @state.budgets.toJS()
 
   header: ->
     a
@@ -94,7 +106,7 @@ BudgetsLink = React.createClass
       className: 'dropdown-menu'
       key: 'elements'
       role: 'menu'
-      for budget in @state.budgets
+      for budget in @budgets()
         li
           key: "budget-#{budget.id}"
           a
@@ -108,9 +120,16 @@ BudgetsLink = React.createClass
           "New Budget"
 
   render: ->
-    li
-      className: 'dropdown'
-      @header()
-      @elements()
+    if @state.ready
+      li
+        className: 'dropdown'
+        @header()
+        @elements()
+    else
+      li
+        key: 'loading'
+        a
+          href: '#'
+          "Loading..."
 
 module.exports = TopMenuComponent
