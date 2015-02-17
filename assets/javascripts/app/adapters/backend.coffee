@@ -38,7 +38,6 @@ class BackendAdapter
 
   authenticate: (authentication) ->
     return unless authentication
-    console.log authentication
     @serializer = new AuthenticationDataSerializer(@apiRoot, authentication)
 
   prepare: (parameters) =>
