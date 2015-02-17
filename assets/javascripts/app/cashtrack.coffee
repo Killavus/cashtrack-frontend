@@ -7,14 +7,13 @@ AuthenticationStore = require('./stores/authentication_store').Store
 
 class CashTrack
   constructor: ->
-    @topMenu = new TopMenu()
     @router  = new Router()
 
   start: ->
     topMenuNode = $("#topMenu")[0]
     contentNode = $("#contents")[0]
 
-    @topMenu.start(topMenuNode)
+    TopMenu.start(topMenuNode)
     @router.start(contentNode)
     Backbone.history.start()
     AuthenticationStore.start()

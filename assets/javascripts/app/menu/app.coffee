@@ -13,4 +13,4 @@ class App
       @flash.error('Oops! There was an error while fetching budgets.')
     )
 
-module.exports = App
+module.exports = new App()
