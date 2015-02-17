@@ -1,11 +1,13 @@
 React = require('react')
 Reflux = require('reflux')
 BudgetStore = require('../stores/budget_store').Store
+NotificationStore = require('../stores/notification_store').Store
 
 {div, button, span, a, ul, li} = React.DOM
 
 TopMenuComponent = React.createClass
   displayName: 'Top Menu'
+  mixins: [Reflux.ListenerMixin]
 
   render: ->
     @container(
@@ -76,11 +78,21 @@ BudgetsLink = React.createClass
   displayName: 'Budgets Link'
   mixins: [Reflux.ListenerMixin]
 
+
+  onNotification: (notification) ->
+    switch notification.name
+      when 'budgetsFetchFailed'
+        @setState errorInBudgets: true
+      when 'budgetsFetchCompleted'
+        @setState errorInBudgets: false
+
   getInitialState: ->
     ready: false
+    errorInBudgets: false
 
   componentDidMount: ->
     @listenTo(BudgetStore, @onBudgetsChange)
+    @listenTo(NotificationStore, @onNotification)
 
   onBudgetsChange: (budgetsData) ->
     @setState ready: budgetsData.get('ready'), budgets: budgetsData.get('budgets')
@@ -112,12 +124,13 @@ BudgetsLink = React.createClass
           a
             href: "#budget/#{budget.id}"
             budget.name
+      li(key: 'split', className: 'divider') if @budgets().length
       li
         key: 'newBudget'
         a
           key: 'new'
-          href: '#new_budget'
-          "New Budget"
+          href: '#open_budget'
+          "Open Budget"
 
   render: ->
     if @state.ready
@@ -126,10 +139,20 @@ BudgetsLink = React.createClass
         @header()
         @elements()
     else
-      li
-        key: 'loading'
-        a
-          href: '#'
-          "Loading..."
+      if @state.errorInBudgets
+        li
+          key: 'loading'
+          a
+            href: '#'
+            style:
+              textDecoration: 'line-through'
+              color: 'red'
+            "Budgets"
+      else
+        li
+          key: 'loading'
+          a
+            href: '#'
+            "Loading..."
 
 module.exports = TopMenuComponent

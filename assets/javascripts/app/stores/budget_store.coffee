@@ -39,8 +39,8 @@ BudgetStore = Reflux.createStore
           @budgets = Immutable.fromJS(budgetsJSON.budgets)
           @ready = true
           @trigger(@data())
+          Notify(name: 'budgetsFetched')
         .fail =>
-          console.log 'gówno'
           Notify(name: 'budgetsFetchFailed')
 
 module.exports =
