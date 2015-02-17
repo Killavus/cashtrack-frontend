@@ -11,9 +11,7 @@ class ApplicationRouter
 
   buildRoutes: (router) ->
     router.route('budget/:id', (id) => console.log(id))
-    router.route('new_budget', =>
-      NewBudgetApp.start(@node())
-    )
+    router.route('new_budget', => NewBudgetApp.start(@node()))
 
   navigate: (router, url) ->
     router.navigate(url, trigger: true)
