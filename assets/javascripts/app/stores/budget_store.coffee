@@ -69,7 +69,9 @@ BudgetStore = Reflux.createStore
 
   fetchBudgetsFromBackend: ->
     @backend.get('budgetoverview').then (budgetsJSON) =>
-      @budgets = Immutable.fromJS(budgetsJSON.budgets)
+      @budgets = Immutable.fromJS(budgetsJSON.budgets).map((budget) =>
+        budget.set('payments', budget.get('payments').map((payment) => payment.set('date', Date.create(payment.get('date')))))
+      )
       @ready = true
       @trigger(@data())
       Notify(name: 'budgetsFetched')

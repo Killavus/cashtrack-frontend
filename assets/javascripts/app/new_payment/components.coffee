@@ -1,7 +1,7 @@
 React = require('react')
 {AddPayment} = require('../stores/budget_store').Actions
 
-{div, label, input, p, button, h3} = React.DOM
+{div, label, input, p, button, h3, a} = React.DOM
 
 module.exports = React.createClass
   displayName: 'Add Payment UI'
@@ -41,6 +41,13 @@ module.exports = React.createClass
         div
           key: 'header'
           className: 'panel-heading'
+          div
+            key: 'actionBox'
+            className: 'pull-right'
+            a
+              href: "#budget/#{@props.budgetID}"
+              className: 'btn btn-xs btn-info'
+              "Back"
           h3
             key: 'header'
             className: 'panel-title'
