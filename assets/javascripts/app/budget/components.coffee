@@ -1,6 +1,6 @@
 React = require('react')
 Reflux = require('reflux')
-{div, h3, ul, li, span, nav, table, tr, td, a, p, button} = React.DOM
+{thead, tbody, th, div, h3, ul, li, span, nav, table, tr, td, a, p, button} = React.DOM
 BudgetStore = require('../stores/budget_store').Store
 {Close, AddShopping} = require('../stores/budget_store').Actions
 
@@ -113,22 +113,26 @@ Budget = React.createClass
   paymentsTable: ->
     table
       className: "table"
-      tr
-        key: "title"
-        td null, "#"
-        td null, "Date"
-        td null, "Value"
-      @paymentsValues()
+      thead
+        key: "head"
+        tr
+          key: "title"
+          th null, "#"
+          th null, "Date"
+          th null, "Value"
+      tbody
+        key: "body"
+        @paymentsValues()
 
   paymentsValues: ->
-    index = 1
+    index = 0
     for payment in @budget().payments
+      index += 1
       tr
-        className: "tr #{payment}"
-        td null, index
-        td null, payment.date
-        td null, payment.value
-      index = index + 1
+        key: payment.id
+        td null, "#{index}"
+        td null, "#{payment.date}"
+        td null, "#{payment.value}"
 
   shoppingInfo: ->
     div
@@ -151,5 +155,56 @@ Budget = React.createClass
         div
           key: "PaymentsContent"
           className: "panel-body"
-          "koczkoczkodan"
+          @shoppingTable()
+
+  shoppingTable: ->
+    table
+      className: "table"
+      thead
+        key: "shoppingTableHead"
+        tr
+          key: "title"
+          th null, "#"
+          th null, "Start date"
+          th null, "End date"
+          th null, "Products"
+      tbody
+        key: "shoppingTableBody"
+        @shoppingValues()
+  shoppingValues: ->
+    count = 0
+    for shopping in @budget().shopping
+      count += 1
+      tr
+        key: "shopping nr #{count}"
+        td null, count
+        td null, shopping.start_date
+        td
+          key: "end_date#{count}"
+          if shopping.end_date
+            "#{shopping.end_date}"
+          else
+            a
+              href: "WPISZ SOBIE LINK"
+              className: "btn btn-primary btn-xs"
+              "Close shopping"
+        td
+          key: "button#{count}"
+          div
+            className: "dropdown"
+            button
+              className: "btn btn-default dropdown-toggle"
+              id: "dropdownMenu#{shopping}"
+              "Product list"
+
+
+#  productList: (shopping) ->
+#    ul
+#      key: "ul#{shopping.start_date}"
+#      className: "dropdown-menu"
+#      htmlFor: "dropdownMenu#{shopping}"
+#      for product in shopping.products
+#        li
+#          key: "key #{product.name}"
+#          "#{product.name}"
 module.exports = Budget
