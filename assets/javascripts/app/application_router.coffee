@@ -2,6 +2,7 @@ _ = require('underscore')
 $ = require('jquery')
 {history, Router} = require('backbone')
 OpenBudgetApp = require('./open_budget/app')
+RegisterApp = require('./register/app')
 
 NotificationStore = require('./stores/notification_store').Store
 
@@ -12,6 +13,7 @@ class ApplicationRouter
   buildRoutes: (router) ->
     router.route('budget/:id', (id) => console.log(id))
     router.route('open_budget', => OpenBudgetApp.start(@node()))
+    router.route('register', => RegisterApp.start(@node()))
 
   navigate: (router, url) ->
     router.navigate(url, trigger: true)

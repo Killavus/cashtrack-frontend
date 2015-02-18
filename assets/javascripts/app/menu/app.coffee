@@ -16,8 +16,12 @@ class App
         switch notification.name
           when 'budgetsFetchFailed'
             @flash.error('Oops! There was an error while fetching budgets.')
-          when 'budgetsFetched'
-            @flash.success('Your budgets are loaded. Hell yeah!')
+          when 'authenticationFailed'
+            @flash.error('Failed to sign in. Are you sure your login & password are correct?')
+          when 'authenticated'
+            @flash.success('Signed in!')
+          when 'signedOut'
+            @flash.success('Signed out! See you soon!')
       )
       @notificationsEnabled = true
 

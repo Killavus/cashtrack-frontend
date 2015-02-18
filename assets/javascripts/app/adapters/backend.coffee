@@ -51,31 +51,31 @@ class BackendAdapter
       contentType: 'application/json'
     )
 
-  post: (url, data) =>
+  post: (url, data, emptyResponse = false) =>
     $.ajax @prepare(
       url: url
       type: 'POST'
-      dataType: 'JSON'
+      dataType: 'JSON' unless emptyResponse
       contentType: 'application/json'
       data: data
       processData: false
     )
 
-  update: (url, data) =>
+  update: (url, data, emptyResponse = false) =>
     $.ajax @prepare(
       url: url
       type: 'PUT'
-      dataType: 'JSON'
+      dataType: 'JSON' unless emptyResponse
       contentType: 'application/json'
       data: data
       processData: false
     )
 
-  delete: (url) =>
+  delete: (url, emptyResponse = false) =>
     $.ajax @prepare(
       url: url
       type: 'DELETE'
-      dataType: 'JSON'
+      dataType: 'JSON' unless emptyResponse
       contentType: 'application/json'
       data: data
       processData: false

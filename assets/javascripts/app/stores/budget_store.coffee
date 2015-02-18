@@ -2,6 +2,7 @@ Reflux              = require('reflux')
 Immutable           = require('immutable')
 
 AuthenticationStore = require('./authentication_store').Store
+NotificationStore   = require('./notification_store').Store
 
 Backend             = require('../adapters/backend')
 BudgetActions       = Reflux.createActions(["Open", "Close"])
@@ -15,6 +16,7 @@ BudgetStore = Reflux.createStore
     @backend = Backend
 
     @listenTo(AuthenticationStore, "authenticationChanged")
+    @listenTo(NotificationStore, "notified")
     @listenTo(BudgetActions.Open,  "openBudget")
 
   getInitialState: ->
@@ -35,13 +37,27 @@ BudgetStore = Reflux.createStore
     if authentication
       @backend.authenticate(authentication)
       unless @ready
-        @backend.get('budgetoverview').then (budgetsJSON) =>
-          @budgets = Immutable.fromJS(budgetsJSON.budgets)
-          @ready = true
-          @trigger(@data())
-          Notify(name: 'budgetsFetched')
-        .fail =>
-          Notify(name: 'budgetsFetchFailed')
+        @fetchBudgetsFromBackend()
+
+  fetchBudgetsFromBackend: ->
+    @backend.get('budgetoverview').then (budgetsJSON) =>
+      @budgets = Immutable.fromJS(budgetsJSON.budgets)
+      @ready = true
+      @trigger(@data())
+      Notify(name: 'budgetsFetched')
+    .fail =>
+      Notify(name: 'budgetsFetchFailed')
+
+  notified: (notification) ->
+    switch notification.name
+      when 'authenticated'
+        @ready = false
+        @trigger(@data())
+        @fetchBudgetsFromBackend()
+      when 'signedOut'
+        @ready = false
+        @trigger(@data())
+        @fetchBudgetsFromBackend()
 
 module.exports =
   Store: BudgetStore
