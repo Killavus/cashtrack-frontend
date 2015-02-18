@@ -66,10 +66,12 @@ BudgetStore = Reflux.createStore
   notified: (notification) ->
     switch notification.name
       when 'authenticated'
+        @backend.authenticate(AuthenticationStore.getInitialState())
         @ready = false
         @trigger(@data())
         @fetchBudgetsFromBackend()
       when 'signedOut'
+        @backend.authenticate(AuthenticationStore.getInitialState())
         @ready = false
         @trigger(@data())
         @fetchBudgetsFromBackend()
