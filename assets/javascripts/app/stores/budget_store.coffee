@@ -7,7 +7,7 @@ NotificationStore   = require('./notification_store').Store
 Backend             = require('../adapters/backend')
 {Notify}            = require('./notification_store').Actions
 
-BudgetActions       = Reflux.createActions(["Open", "Close", "AddPayment", "AddShopping"])
+BudgetActions       = Reflux.createActions(["Open", "Close", "AddPayment", "AddShopping", "CloseShopping"])
 BudgetStore = Reflux.createStore
   init: ->
     @budgets = new Immutable.List([])
@@ -20,6 +20,7 @@ BudgetStore = Reflux.createStore
     @listenTo(BudgetActions.Close,  "closeBudget")
     @listenTo(BudgetActions.AddPayment, "addPayment")
     @listenTo(BudgetActions.AddShopping, "addShopping")
+    @listenTo(BudgetActions.CloseShopping, "closeShopping")
 
   getInitialState: ->
     @data()
@@ -67,7 +68,7 @@ BudgetStore = Reflux.createStore
       @budgets = @budgets.map (budget) =>
         if budget.get('id') is parseInt(budgetID)
           budget.set('shopping', budget.get('shopping').concat(
-            Immutable.fromJS([{ id: shoppingJSON, start_date: Date.create(), end_date: null, products: [] }])
+            Immutable.fromJS([{ id: shoppingJSON.shopping_id, start_date: Date.create(), end_date: null, products: [] }])
           ))
         else
           budget
@@ -75,6 +76,24 @@ BudgetStore = Reflux.createStore
       Notify(name: 'shoppingCreated', arguments: [budgetID])
     .fail =>
       Notify(name: 'shoppingCreationFailed')
+
+  closeShopping: (budgetID, shoppingID) ->
+    @backend.delete("shopping/#{shoppingID}", true).then =>
+      @budgets = @budgets.map (budget) =>
+        if budget.get("id") is parseInt(budgetID)
+          budget.set('shopping', budget.get('shopping').map (shopping) =>
+            if shopping.get('id') is shoppingID
+              shopping.set('end_date', Date.create())
+            else
+              shopping
+          )
+        else
+          budget
+      @trigger(@data())
+      Notify(name: 'shoppingClosed')
+    .fail =>
+      Notify(name: 'shoppingCloseFailed')
+
 
   authenticationChanged: (authentication) ->
     if authentication

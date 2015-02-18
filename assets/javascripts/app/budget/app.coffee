@@ -23,6 +23,10 @@ class BudgetApp
             @flash.success("Successfully created shopping!")
           when 'shoppingCreationFailed'
             @flash.error('Shopping creation failed. What a joke!')
+          when 'shoppingClosed'
+            @flash.success('Shopping closed!')
+          when 'shoppingCloseFailed'
+            @flash.error('Failed to close shopping.')
       )
 
 

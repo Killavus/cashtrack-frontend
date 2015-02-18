@@ -2,7 +2,7 @@ React = require('react')
 Reflux = require('reflux')
 {thead, tbody, th, div, h3, ul, li, span, nav, table, tr, td, a, p, button} = React.DOM
 BudgetStore = require('../stores/budget_store').Store
-{Close, AddShopping} = require('../stores/budget_store').Actions
+{Close, AddShopping, CloseShopping} = require('../stores/budget_store').Actions
 
 Budget = React.createClass
   mixins: [Reflux.ListenerMixin]
@@ -22,6 +22,10 @@ Budget = React.createClass
 
   onAddShopping: ->
     AddShopping(@props.budgetID)
+
+  onCloseShopping: (shoppingID) ->
+    (ev) =>
+      CloseShopping(@props.budgetID, shoppingID)
 
   render: ->
     if @state.ready
@@ -178,6 +182,7 @@ Budget = React.createClass
       tbody
         key: "shoppingTableBody"
         @shoppingValues()
+
   shoppingValues: ->
     count = 0
     for shopping in @budget().shopping
@@ -185,14 +190,21 @@ Budget = React.createClass
       tr
         key: "shopping nr #{count}"
         td null, count
-        td null, shopping.start_date
+        td null,
+          if shopping.start_date.format?
+            shopping.start_date.format("{yyyy}-{MM}-{dd}")
+          else
+            shopping.start_date
         td
           key: "end_date#{count}"
           if shopping.end_date
-            "#{shopping.end_date}"
+            if shopping.end_date?.format?
+              shopping.end_date.format("{yyyy}-{MM}-{dd}")
+            else
+              shopping.end_date
           else
-            a
-              href: "WPISZ SOBIE LINK"
+            button
+              onClick: @onCloseShopping(shopping.id)
               className: "btn btn-primary btn-xs"
               "Close shopping"
         td
