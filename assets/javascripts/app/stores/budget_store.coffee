@@ -7,7 +7,7 @@ NotificationStore   = require('./notification_store').Store
 Backend             = require('../adapters/backend')
 {Notify}            = require('./notification_store').Actions
 
-BudgetActions       = Reflux.createActions(["Open", "Close", "AddPayment"])
+BudgetActions       = Reflux.createActions(["Open", "Close", "AddPayment", "AddShopping"])
 BudgetStore = Reflux.createStore
   init: ->
     @budgets = new Immutable.List([])
@@ -19,6 +19,7 @@ BudgetStore = Reflux.createStore
     @listenTo(BudgetActions.Open,  "openBudget")
     @listenTo(BudgetActions.Close,  "closeBudget")
     @listenTo(BudgetActions.AddPayment, "addPayment")
+    @listenTo(BudgetActions.AddShopping, "addShopping")
 
   getInitialState: ->
     @data()
@@ -60,6 +61,20 @@ BudgetStore = Reflux.createStore
       Notify(name: 'paymentCreated', arguments: [params.budgetID])
     .fail =>
       Notify(name: 'paymentCreationFailed')
+
+  addShopping: (budgetID) ->
+    @backend.post("budget/#{budgetID}/shopping").then (shoppingJSON) =>
+      @budgets = @budgets.map (budget) =>
+        if budget.get('id') is parseInt(budgetID)
+          budget.set('shopping', budget.get('shopping').concat(
+            Immutable.fromJS([{ id: shoppingJSON, start_date: Date.create(), end_date: null, products: [] }])
+          ))
+        else
+          budget
+      @trigger(@data())
+      Notify(name: 'shoppingCreated', arguments: [budgetID])
+    .fail =>
+      Notify(name: 'shoppingCreationFailed')
 
   authenticationChanged: (authentication) ->
     if authentication

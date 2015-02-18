@@ -90,7 +90,6 @@ AuthenticationStore = Reflux.createStore
     @establishLocalStorageCredentials()
     Notify(name: 'signedOut')
 
-
   registerUser: (params) ->
     @backend.post('users', user: { email: params.email, password: params.password }, true).then =>
       Notify(name: 'registered')

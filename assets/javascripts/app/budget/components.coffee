@@ -2,7 +2,7 @@ React = require('react')
 Reflux = require('reflux')
 {div, h3, ul, li, span, nav, table, tr, td, a, p, button} = React.DOM
 BudgetStore = require('../stores/budget_store').Store
-{Close} = require('../stores/budget_store').Actions
+{Close, AddShopping} = require('../stores/budget_store').Actions
 
 Budget = React.createClass
   mixins: [Reflux.ListenerMixin]
@@ -19,6 +19,9 @@ Budget = React.createClass
 
   onClosingBudget: ->
     @setState closingBudget: true
+
+  onAddShopping: ->
+    AddShopping(@props.budgetID)
 
   render: ->
     if @state.ready
@@ -101,7 +104,7 @@ Budget = React.createClass
                 "Add Payment"
           h3
             className: "panel-title"
-            "About Payments"
+            "Payments"
         div
           key: "PaymentsContent"
           className: "panel-body"
@@ -138,8 +141,8 @@ Budget = React.createClass
           unless @budget().closed
             div
               className: "pull-right"
-              a
-                href: "#budget/#{@budget().id}/add_shopping"
+              button
+                onClick: @onAddShopping
                 className: "btn btn-primary btn-xs"
                 "Add Shopping"
           h3
