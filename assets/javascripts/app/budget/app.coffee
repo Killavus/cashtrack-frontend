@@ -1,6 +1,7 @@
 React = require('react')
 Flash = require('../utils/flash')
 Gui = React.createFactory(require('./components'))
+NotificationStore = require('../stores/notification_store').Store
 
 class BudgetApp
   constructor: ->
@@ -9,6 +10,16 @@ class BudgetApp
   start: (node, id) =>
     @flash = new Flash()
     React.render(Gui(budgetID: id),node)
+
+    unless @notificationsRegistered
+      NotificationStore.listen((notification) =>
+        switch notification.name
+          when 'budgetClosed'
+            name = notification.arguments[1]
+            @flash.success("Successfully closed budget named #{name}!")
+          when 'budgetClosingFailed'
+            @flash.error('Oops! Failed to close budget!')
+      )
 
 
 module.exports = new BudgetApp()

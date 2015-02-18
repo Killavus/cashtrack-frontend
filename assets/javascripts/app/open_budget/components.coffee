@@ -18,8 +18,9 @@ module.exports = React.createClass
     @listenTo(NotificationStore, @handleCreationNotification)
 
   handleCreationNotification: (notification) ->
-    return if notification.name not in ['budgetCreated', 'budgetCreationFailed']
-    @setState submitting: false
+    switch notification.name
+      when 'budgetCreationFailed'
+        @setState submitting: false
 
   submittable: ->
     @state.name.length > 2 and not @state.submitting

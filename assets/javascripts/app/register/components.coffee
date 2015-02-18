@@ -17,7 +17,7 @@ RegisterForm = React.createClass
     submitting: false
 
   componentDidMount: ->
-    @listenTo(AuthenticationStore, @authenticationChanged)
+    @listenTo(AuthenticationStore, @authenticationChanged, @authenticationChanged)
     @listenTo(NotificationStore, @onNotification)
 
   onNotification: (notification) ->

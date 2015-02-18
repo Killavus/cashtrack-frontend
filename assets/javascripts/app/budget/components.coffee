@@ -1,51 +1,44 @@
 React = require('react')
 Reflux = require('reflux')
-{div, h3, ul, li, span, nav, table, tr, td, a} = React.DOM
+{div, h3, ul, li, span, nav, table, tr, td, a, p, button} = React.DOM
 BudgetStore = require('../stores/budget_store').Store
-
+{Close} = require('../stores/budget_store').Actions
 
 Budget = React.createClass
   mixins: [Reflux.ListenerMixin]
+
+  getInitialState: ->
+    closingBudget: false
+    closed: false
+
+  onClose: ->
+    Close(@props.budgetID)
+
+  onCloseCanceled: ->
+    @setState closingBudget: false
+
+  onClosingBudget: ->
+    @setState closingBudget: true
 
   render: ->
     if @state.ready
       div
         key: "body"
         @budgetInfo()
-
-
     else
       div null, "loading..."
 
   getInitialState: ->
     ready: false
+
   componentDidMount: ->
-    @listenTo(BudgetStore, @onBudgetsUpdate)
+    @listenTo(BudgetStore, @onBudgetsUpdate, @onBudgetsUpdate)
 
   onBudgetsUpdate: (budgetData) ->
     @setState(ready: budgetData.get('ready'), budgets: budgetData.get('budgets'))
 
   budget: ->
     @state.budgets.toJS().find (budget) => budget.id is parseInt(@props.budgetID)
-
-  budgetClosed: ->
-    div
-      className: "pull-right"
-      h3
-        key: "closed"
-        "Closed?"
-        @budgetClosedColorSpan()
-
-  budgetClosedColorSpan: ->
-    if !@budget().closed
-      span
-        className: "label label-success"
-        "NO"
-    else
-      span
-        className: "label label-warning"
-        "YES"
-
 
   budgetInfo: ->
     div
@@ -55,20 +48,41 @@ Budget = React.createClass
         className: "panel-heading"
         div
           className: "pull-right"
-          a
-            href: "#budget/#{@budget().id}/close"
-            className: "btn btn-danger btn-xs"
-            "Close budget"
+          if @budget().closed
+            p
+              key: 'closed'
+              style:
+                color: 'red'
+                fontWeight: 'bold'
+              "Closed!"
+          else
+            if @state.closingBudget
+              p
+                key: 'confirm'
+                "Are you sure?"
+                "\u2003"
+                button
+                  onClick: @onClose
+                  className: 'btn btn-danger btn-xs'
+                  "Yes"
+                "\u2003"
+                button
+                  onClick: @onCloseCanceled
+                  className: 'btn btn-xs'
+                  "No"
+            else
+              button
+                onClick: @onClosingBudget
+                className: "btn btn-danger btn-xs"
+                "Close budget"
         h3
           className: "panel-title"
           @budget().name
-
       div
         key: "content"
         className: "panel-body"
         @shoppingInfo()
         @paymentsInfo()
-
 
   paymentsInfo: ->
     div
@@ -78,12 +92,13 @@ Budget = React.createClass
         div
           key: "PaymentsHeader"
           className: "panel-heading"
-          div
-            className: "pull-right"
-            a
-              href: "#budget/#{@budget().id}/add_payment"
-              className: "btn btn-primary btn-xs"
-              "Add Payment"
+          unless @budget().closed
+            div
+              className: "pull-right"
+              a
+                href: "#budget/#{@budget().id}/add_payment"
+                className: "btn btn-primary btn-xs"
+                "Add Payment"
           h3
             className: "panel-title"
             "About Payments"
@@ -120,12 +135,13 @@ Budget = React.createClass
         div
           key: "PaymentsHeader"
           className: "panel-heading"
-          div
-            className: "pull-right"
-            a
-              href: "#budget/#{@budget().id}/add_shopping"
-              className: "btn btn-primary btn-xs"
-              "Add Shopping"
+          unless @budget().closed
+            div
+              className: "pull-right"
+              a
+                href: "#budget/#{@budget().id}/add_shopping"
+                className: "btn btn-primary btn-xs"
+                "Add Shopping"
           h3
             className: "panel-title"
             "Shopping"

@@ -77,7 +77,6 @@ class BackendAdapter
       type: 'DELETE'
       dataType: 'JSON' unless emptyResponse
       contentType: 'application/json'
-      data: data
       processData: false
     )
 

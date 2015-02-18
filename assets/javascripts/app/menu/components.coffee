@@ -101,7 +101,7 @@ BudgetsLink = React.createClass
     errorInBudgets: false
 
   componentDidMount: ->
-    @listenTo(BudgetStore, @onBudgetsChange)
+    @listenTo(BudgetStore, @onBudgetsChange, @onBudgetsChange)
     @listenTo(NotificationStore, @onNotification)
 
   onBudgetsChange: (budgetsData) ->

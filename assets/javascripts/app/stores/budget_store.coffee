@@ -18,6 +18,7 @@ BudgetStore = Reflux.createStore
     @listenTo(AuthenticationStore, "authenticationChanged")
     @listenTo(NotificationStore, "notified")
     @listenTo(BudgetActions.Open,  "openBudget")
+    @listenTo(BudgetActions.Close,  "closeBudget")
 
   getInitialState: ->
     @data()
@@ -27,11 +28,25 @@ BudgetStore = Reflux.createStore
 
   openBudget: (name) ->
     @backend.post('budget', budget: { name: name }).then (budgetJSON) =>
-      @budgets = @budgets.concat(Immutable.fromJS([{ id: budgetJSON.budget_id, name: name }]))
+      @budgets = @budgets.concat(Immutable.fromJS([{ id: budgetJSON.budget_id, name: name, payments: [], shopping: [], closed: false }]))
       @trigger(@data())
       Notify(name: 'budgetCreated', arguments: [budgetJSON.budget_id, name])
     .fail =>
       Notify(name: 'budgetCreationFailed')
+
+  closeBudget: (id) ->
+    @backend.delete("budget/#{id}", true).then =>
+      budgetName = null
+      @budgets = @budgets.map (budget) =>
+        if budget.get('id') is id
+          budgetName = budget.get('name')
+          budget.set('closed', true)
+        else
+          budget
+      @trigger(@data())
+      Notify(name: 'budgetClosed', arguments: [id, budgetName])
+    .fail =>
+      Notify(name: 'budgetClosingFailed')
 
   authenticationChanged: (authentication) ->
     if authentication
