@@ -3,6 +3,7 @@ $ = require('jquery')
 {history, Router} = require('backbone')
 OpenBudgetApp = require('./open_budget/app')
 RegisterApp = require('./register/app')
+BudgetApp = require('./budget/app')
 
 NotificationStore = require('./stores/notification_store').Store
 
@@ -11,7 +12,7 @@ class ApplicationRouter
   node: -> $("#contents")[0]
 
   buildRoutes: (router) ->
-    router.route('budget/:id', (id) => console.log(id))
+    router.route('budget/:id', (id) => BudgetApp.start(@node(), id))
     router.route('open_budget', => OpenBudgetApp.start(@node()))
     router.route('register', => RegisterApp.start(@node()))
 
