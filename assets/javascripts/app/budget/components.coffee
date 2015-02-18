@@ -123,6 +123,13 @@ Budget = React.createClass
       tbody
         key: "body"
         @paymentsValues()
+        tr
+          key: "sum"
+          td null, " "
+          td null, " "
+          td
+            key: "sum value"
+            "#{@paymentsSum()}"
 
   paymentsValues: ->
     index = 0
@@ -196,8 +203,11 @@ Budget = React.createClass
               className: "btn btn-default dropdown-toggle"
               id: "dropdownMenu#{shopping}"
               "Product list"
-
-
+  paymentsSum: ->
+    sum = 0
+    for payment in @budget().payments
+      sum += payment.value
+    return sum
 #  productList: (shopping) ->
 #    ul
 #      key: "ul#{shopping.start_date}"
